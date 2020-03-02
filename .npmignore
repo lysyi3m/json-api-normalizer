@@ -1,0 +1,16 @@
+.history
+
+*.log
+
+/node_modules/
+
+*.tgz
+
+.babelrc
+.eslint*
+.gitignore
+*.yml
+.nvmrc
+
+/src/
+/tests/
