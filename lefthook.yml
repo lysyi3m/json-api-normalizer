@@ -1,0 +1,6 @@
+pre-commit:
+  commands:
+    linter:
+      files: git diff --name-only @{push}
+      glob: "*.js"
+      run: npx eslint {files}

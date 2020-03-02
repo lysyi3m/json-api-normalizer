@@ -1,0 +1,43 @@
+{
+  "name": "@lysyi3m/json-api-normalizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel src -d lib",
+    "development": "babel src -w -d lib",
+    "test": "jest --config tests/jest.config.js",
+    "lint": "eslint --quiet . --ext .js --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lysyi3m/json-api-normalizer.git"
+  },
+  "author": "Emil Kashkevich <emil.kashkevich@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lysyi3m/json-api-normalizer/issues"
+  },
+  "homepage": "https://github.com/lysyi3m/json-api-normalizer#readme",
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
+  },
+  "devDependencies": {
+    "@arkweid/lefthook": "^0.7.1",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.6",
+    "@babel/preset-env": "^7.8.6",
+    "babel-jest": "^25.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "jest": "^25.1.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15"
+  }
+}
