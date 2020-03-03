@@ -1,12 +1,47 @@
 import { isArray, isEmpty, isNil, find, isPlainObject, camelCase } from 'lodash'
 
 /**
- * Extract data relationships using id-type mapping of realtionship object with included entities
+ * Get single relationship data using id-type mapping of resource relationship object
+ * @param {object} relationship - resource relationship object
+ * @param {Array} included - included resources from JSON:API response
+ * @returns {object} - relationship data
+ */
+export function getRelationshipData (relationship, included) {
+  if (isNil(relationship) || isEmpty(relationship)) {
+    return
+  }
+
+  if (isNil(included) || isEmpty(included)) {
+    return
+  }
+
+  const resource = find(included, { id: relationship.id, type: relationship.type })
+
+  if (isNil(resource) || isEmpty(resource)) {
+    return
+  }
+
+  const {
+    attributes,
+    id,
+    links,
+    meta
+  } = resource
+
+  return Object.assign({}, { id, links, meta }, attributes)
+}
+
+/**
+ * Extract data relationships using id-type mapping of resource realtionships object with included entities
  * @param {object} relationships - resource relationships object
  * @param {Array} included - included resources from JSON:API response
  * @returns {object} - extracted relationships data
  */
 export function extractRelationships (relationships, included) {
+  if (isNil(relationships) || isEmpty(relationships)) {
+    return
+  }
+
   if (isNil(included) || isEmpty(included)) {
     return
   }
@@ -20,13 +55,13 @@ export function extractRelationships (relationships, included) {
       return
     }
 
-    const { attributes } = find(included, { id: data.id, type: data.type }) || {}
-
-    if (isNil(attributes) || isEmpty(attributes)) {
-      return
+    if (isArray(data)) {
+      extractedRelationships[key] = data.map(elem => getRelationshipData(elem, included))
     }
 
-    extractedRelationships[key] = Object.assign({}, { id: data.id }, attributes)
+    if (isPlainObject(data)) {
+      extractedRelationships[key] = getRelationshipData(data, included)
+    }
   })
 
   return extractedRelationships
@@ -42,14 +77,14 @@ export function processData ({ data, included }) {
 
   return dataArray.map(elem => {
     const {
-      attributes = {},
+      attributes,
       id,
       links,
       meta,
-      relationships = {}
+      relationships
     } = elem
 
-    const extractedRelationships = extractRelationships(relationships, included) || {}
+    const extractedRelationships = extractRelationships(relationships, included)
 
     return Object.assign({}, { id, links, meta }, attributes, extractedRelationships)
   })
@@ -65,7 +100,7 @@ export function processData ({ data, included }) {
  */
 export function camelizeData (data) {
   if (isArray(data)) {
-    return data.map(elem => camelizeData(elem))
+    return data.map(camelizeData)
   }
 
   if (isPlainObject(data)) {
