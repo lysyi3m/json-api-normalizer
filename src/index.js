@@ -2,6 +2,7 @@ import { isArray, isEmpty, isNil, find, isPlainObject, camelCase } from 'lodash'
 
 /**
  * Get single relationship data using id-type mapping of resource relationship object
+ * if relationship points to another one, nest them into each other
  * @param {object} relationship - resource relationship object
  * @param {Array} included - included resources from JSON:API response
  * @returns {object} - relationship data
@@ -25,10 +26,13 @@ export function getRelationshipData (relationship, included) {
     attributes,
     id,
     links,
-    meta
+    meta,
+    relationships,
   } = resource
 
-  return Object.assign({}, { id, links, meta }, attributes)
+  const extractedRelationships = extractRelationships(relationships, included)
+
+  return Object.assign({}, { id, links, meta }, attributes, extractedRelationships)
 }
 
 /**
