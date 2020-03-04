@@ -3,6 +3,7 @@
 Utility to normalize JSON:API data with ease
 
 ![Node.js CI](https://github.com/lysyi3m/json-api-normalizer/workflows/Node.js%20CI/badge.svg?branch=master)
+[![npm version](https://badge.fury.io/js/%40lysyi3m%2Fjson-api-normalizer.svg)](https://badge.fury.io/js/%40lysyi3m%2Fjson-api-normalizer)
 
 ## Description
 
