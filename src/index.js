@@ -77,21 +77,25 @@ export function extractRelationships (relationships, included) {
  * @returns {object} - processed data
  */
 export function processData ({ data, included }) {
-  const dataArray = isArray(data) ? data : [data]
+  if (isArray(data)) {
+    return data.map((elem) => processData({ data: elem, included }))
+  }
 
-  return dataArray.map(elem => {
+  if (isPlainObject(data)) {
     const {
       attributes,
       id,
       links,
       meta,
       relationships
-    } = elem
+    } = data
 
     const extractedRelationships = extractRelationships(relationships, included)
 
     return Object.assign({}, { id, links, meta }, attributes, extractedRelationships)
-  })
+  }
+
+  return data
 }
 
 /**

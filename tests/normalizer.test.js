@@ -1,6 +1,6 @@
 import normalizer from '../src'
 
-const json = {
+const multipleResourcesJSON = {
   data: [
     {
       id: '1',
@@ -48,11 +48,92 @@ const json = {
   }
 }
 
+const singleResourcesJSON = {
+  data: {
+    id: '1',
+    type: 'posts',
+    attributes: {
+      title: 'Some Title'
+    },
+    relationships: {
+      author: {
+        data: { type: 'authors', id: '9' }
+      }
+    }
+  },
+  included: [
+    {
+      id: '9',
+      type: 'authors',
+      attributes: {
+        first_name: 'Bob'
+      }
+    }
+  ],
+  meta: {
+    records_count: '1'
+  }
+}
+
 describe('normalizer()', () => {
-  test('correctly process json with relationships', () => {
-    expect(normalizer(json)).toMatchObject({
-      data: [
-        {
+  describe('multiple resources', () => {
+    test('correctly process json with relationships', () => {
+      expect(normalizer(multipleResourcesJSON)).toMatchObject({
+        data: [
+          {
+            id: '1',
+            title: 'Some Title',
+            author: {
+              id: '9',
+              first_name: 'Bob'
+            }
+          },
+          {
+            id: '2',
+            title: 'Some Another',
+            author: {
+              id: '10',
+              first_name: 'Alice'
+            }
+          }
+        ],
+        meta: {
+          records_count: '2'
+        }
+      })
+    })
+
+    test('correctly process json and camelize keys', () => {
+      expect(normalizer(multipleResourcesJSON, { camelize: true })).toMatchObject({
+        data: [
+          {
+            id: '1',
+            title: 'Some Title',
+            author: {
+              id: '9',
+              firstName: 'Bob'
+            }
+          },
+          {
+            id: '2',
+            title: 'Some Another',
+            author: {
+              id: '10',
+              firstName: 'Alice'
+            }
+          }
+        ],
+        meta: {
+          recordsCount: '2'
+        }
+      })
+    })
+  })
+
+  describe('single resources', () => {
+    test('correctly process json with relationships', () => {
+      expect(normalizer(singleResourcesJSON)).toMatchObject({
+        data: {
           id: '1',
           title: 'Some Title',
           author: {
@@ -60,25 +141,15 @@ describe('normalizer()', () => {
             first_name: 'Bob'
           }
         },
-        {
-          id: '2',
-          title: 'Some Another',
-          author: {
-            id: '10',
-            first_name: 'Alice'
-          }
+        meta: {
+          records_count: '1'
         }
-      ],
-      meta: {
-        records_count: '2'
-      }
+      })
     })
-  })
 
-  test('correctly process json and camelize keys', () => {
-    expect(normalizer(json, { camelize: true })).toMatchObject({
-      data: [
-        {
+    test('correctly process json and camelize keys', () => {
+      expect(normalizer(singleResourcesJSON, { camelize: true })).toMatchObject({
+        data: {
           id: '1',
           title: 'Some Title',
           author: {
@@ -86,18 +157,10 @@ describe('normalizer()', () => {
             firstName: 'Bob'
           }
         },
-        {
-          id: '2',
-          title: 'Some Another',
-          author: {
-            id: '10',
-            firstName: 'Alice'
-          }
+        meta: {
+          recordsCount: '1'
         }
-      ],
-      meta: {
-        recordsCount: '2'
-      }
+      })
     })
   })
 })
